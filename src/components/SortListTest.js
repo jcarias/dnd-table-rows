@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import isEmpty from "lodash/isEmpty";
 import {
@@ -12,12 +12,14 @@ import {
   Grid,
   Typography,
   Button,
-  TableFooter
+  TableFooter,
+  Fab
 } from "@material-ui/core";
 
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import AddIcon from "@material-ui/icons/Add";
 
 import "./SortListTest.css";
 
@@ -50,105 +52,107 @@ const SortableItem = SortableElement(({ field, index, itemAction }) => (
 
 const SortableList = SortableContainer(({ items, onItemAction }) => {
   return (
-    <Table size="small">
-      <TableHead>
-        <TableRow>
-          <TableCell></TableCell>
-          <TableCell>#</TableCell>
-          <TableCell>Type</TableCell>
-          <TableCell>Name</TableCell>
-          <TableCell>Display Label</TableCell>
-          <TableCell></TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {!isEmpty(items) ? (
-          items.map((value, index) => (
-            <SortableItem
-              key={`item-${index}`}
-              index={index}
-              field={value}
-              itemAction={onItemAction}
-            />
-          ))
-        ) : (
+    <Fragment>
+      <Table size="small">
+        <TableHead>
           <TableRow>
-            <TableCell colSpan={6}>
-              <Box p={3} m={2}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="subtitle1"
-                      align="center"
-                      color="textSecondary"
-                    >
-                      No items added yet.
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="caption"
-                      align="center"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      Create a new field or choose from templates.
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box m={2}>
-                      <Grid
-                        container
-                        justify="center"
-                        direction="row"
-                        alignItems="center"
-                        spacing={3}
+            <TableCell></TableCell>
+            <TableCell>#</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Display Label</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {!isEmpty(items) ? (
+            items.map((value, index) => (
+              <SortableItem
+                key={`item-${index}`}
+                index={index}
+                field={value}
+                itemAction={onItemAction}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6}>
+                <Box p={3} m={2}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="subtitle1"
+                        align="center"
+                        color="textSecondary"
                       >
-                        <Grid item>
-                          <Button color="primary" variant="outlined">
-                            Choose template...
-                          </Button>
+                        No items added yet.
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="caption"
+                        align="center"
+                        color="textSecondary"
+                        component="p"
+                      >
+                        Create a new field or choose from templates.
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Box m={2}>
+                        <Grid
+                          container
+                          justify="center"
+                          direction="row"
+                          alignItems="center"
+                          spacing={3}
+                        >
+                          <Grid item>
+                            <Button color="primary" variant="outlined">
+                              Choose template...
+                            </Button>
+                          </Grid>
+                          <Grid item>
+                            <Typography color="textSecondary" component="p">
+                              or
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              color="primary"
+                              variant="contained"
+                              onClick={() => onItemAction(Actions.add)}
+                            >
+                              Create New Field
+                            </Button>
+                          </Grid>
                         </Grid>
-                        <Grid item>
-                          <Typography color="textSecondary" component="p">
-                            or
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Button
-                            color="primary"
-                            variant="contained"
-                            onClick={() => onItemAction(Actions.add)}
-                          >
-                            Create New Field
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Box>
+                      </Box>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Box>
-            </TableCell>
-          </TableRow>
+                </Box>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+        {!isEmpty(items) && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={6} align="right">
+                {`${items.length} fields`}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         )}
-      </TableBody>
-      {!isEmpty(items) && (
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={6} align="right">
-              <Button
-                onClick={() => onItemAction(Actions.add)}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                Add new Field
-              </Button>
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      )}
-    </Table>
+      </Table>
+      <Fab
+        style={{ position: "fixed", bottom: 16, right: 16 }}
+        onClick={() => onItemAction(Actions.add)}
+        color="secondary"
+      >
+        <AddIcon />
+      </Fab>
+    </Fragment>
   );
 });
 
