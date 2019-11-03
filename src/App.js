@@ -1,25 +1,80 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import MyForm from "./components/MyForm";
+import { Box, Paper, Typography } from "@material-ui/core";
+import { swapArrayElements, uuid } from "./utils";
+import SortableTable, { Actions } from "./components/SortListTest";
+
+const dummyFields = [
+  {
+    id: "1",
+    type: "text",
+    name: "firstName",
+    label: "First name"
+  },
+  {
+    id: "2",
+    type: "text",
+    name: "lastName",
+    label: "Last name"
+  },
+  {
+    id: "3",
+    type: "select",
+    name: "gender",
+    label: "Gender"
+  }
+];
 
 function App() {
+  const [fields, setFields] = useState(dummyFields);
+
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    setFields(swapArrayElements(fields, oldIndex, newIndex));
+  };
+
+  const addNewField = () => {
+    const id = uuid();
+    return {
+      id,
+      type: "text",
+      name: id,
+      label: id
+    };
+  };
+
+  const itemActionHandler = (actionType, item) => {
+    switch (actionType) {
+      case Actions.edit:
+        console.warn("UNIMPLEMENTED!: ", actionType, item);
+        break;
+
+      case Actions.delete:
+        setFields(fields.filter(field => field.id !== item.id));
+        break;
+
+      case Actions.add:
+        setFields([...fields, addNewField()]);
+        break;
+
+      default:
+        console.log(actionType);
+        break;
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box m={2} p={3} bgcolor="#F5F5F5">
+      <Box pb={1}>
+        <Typography>{`Drag & Drop rows`}</Typography>
+      </Box>
+      <Paper elevation={3}>
+        <SortableTable
+          items={fields}
+          onSortEnd={onSortEnd}
+          onItemAction={itemActionHandler}
+        />
+      </Paper>
+    </Box>
   );
 }
 
