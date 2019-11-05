@@ -25,30 +25,37 @@ import "./SortListTest.css";
 
 export const Actions = { add: "add", edit: "edit", delete: "delete" };
 
-const SortableItem = SortableElement(({ field, index, itemAction }) => (
-  <TableRow key={index} hover>
-    <TableCell align="right" width="24px">
-      <DragIndicatorIcon style={{ cursor: "row-resize" }} />
-    </TableCell>
-    <TableCell align="right" width="100px">
-      {index}
-    </TableCell>
-    <TableCell width="33%">{field.type}</TableCell>
-    <TableCell width="33%">{field.name}</TableCell>
-    <TableCell width="33%">{field.label}</TableCell>
-    <TableCell nowrap="true">
-      <IconButton onClick={() => itemAction(Actions.edit, field)} size="small">
-        <EditIcon />
-      </IconButton>
-      <IconButton
-        onClick={() => itemAction(Actions.delete, field)}
-        size="small"
-      >
-        <DeleteIcon />
-      </IconButton>
-    </TableCell>
-  </TableRow>
-));
+const SortableItem = SortableElement(
+  ({ field, index, itemAction, ...otherProps }) => {
+    return (
+      <TableRow key={index} hover>
+        <TableCell align="right" width="24px">
+          <DragIndicatorIcon style={{ cursor: "row-resize" }} />
+        </TableCell>
+        <TableCell align="right" width="100px">
+          {otherProps.idx}
+        </TableCell>
+        <TableCell width="33%">{field.type}</TableCell>
+        <TableCell width="33%">{field.name}</TableCell>
+        <TableCell width="33%">{field.label}</TableCell>
+        <TableCell nowrap="true">
+          <IconButton
+            onClick={() => itemAction(Actions.edit, field)}
+            size="small"
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => itemAction(Actions.delete, field)}
+            size="small"
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    );
+  }
+);
 
 const SortableList = SortableContainer(({ items, onItemAction }) => {
   return (
@@ -66,14 +73,18 @@ const SortableList = SortableContainer(({ items, onItemAction }) => {
         </TableHead>
         <TableBody>
           {!isEmpty(items) ? (
-            items.map((value, index) => (
-              <SortableItem
-                key={`item-${index}`}
-                index={index}
-                field={value}
-                itemAction={onItemAction}
-              />
-            ))
+            items.map((value, index) => {
+              console.log({ value, index });
+              return (
+                <SortableItem
+                  key={`item-${index}`}
+                  index={index}
+                  idx={index}
+                  field={value}
+                  itemAction={onItemAction}
+                />
+              );
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={6}>

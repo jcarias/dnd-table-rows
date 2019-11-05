@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import MyForm from "./components/MyForm";
-import { Box, Paper, Typography } from "@material-ui/core";
+import { Box, Paper, Typography, createMuiTheme } from "@material-ui/core";
 import { swapArrayElements, uuid } from "./utils";
 import SortableTable, { Actions } from "./components/SortListTest";
+import { ThemeProvider } from "@material-ui/styles";
+import { fontSize } from "@material-ui/system";
 
 const dummyFields = [
   {
@@ -24,6 +25,20 @@ const dummyFields = [
     label: "Gender"
   }
 ];
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: "Nunito",
+    fontSize: 16
+  },
+  overrides: {
+    MuiTableCell: {
+      head: {
+        fontWeight: 600
+      }
+    }
+  }
+});
 
 function App() {
   const [fields, setFields] = useState(dummyFields);
@@ -63,18 +78,20 @@ function App() {
   };
 
   return (
-    <Box m={2} p={3} bgcolor="#F5F5F5">
-      <Box pb={1}>
-        <Typography>{`Drag & Drop rows`}</Typography>
+    <ThemeProvider theme={theme}>
+      <Box m={2} p={3} bgcolor="#F5F5F5">
+        <Box pb={1}>
+          <Typography>{`Drag & Drop rows`}</Typography>
+        </Box>
+        <Paper elevation={3}>
+          <SortableTable
+            items={fields}
+            onSortEnd={onSortEnd}
+            onItemAction={itemActionHandler}
+          />
+        </Paper>
       </Box>
-      <Paper elevation={3}>
-        <SortableTable
-          items={fields}
-          onSortEnd={onSortEnd}
-          onItemAction={itemActionHandler}
-        />
-      </Paper>
-    </Box>
+    </ThemeProvider>
   );
 }
 
